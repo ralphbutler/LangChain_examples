@@ -1,0 +1,100 @@
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain/chat_models/__init__.py:31: LangChainDeprecationWarning: Importing chat models from langchain is deprecated. Importing from langchain will no longer be supported as of langchain==0.2.0. Please import from langchain-community instead:
+
+`from langchain_community.chat_models import ChatOpenAI`.
+
+To install langchain-community run `pip install -U langchain-community`.
+  warnings.warn(
+Working Agent: Query Planner
+Starting Task: 
+If any SQL access is required, you have access to a table that was created
+with this SQL command:
+    ```sql
+        CREATE TABLE IF NOT EXISTS reactions (
+            REACTION_ID TEXT PRIMARY KEY,
+            EC TEXT
+    ```
+Create a description of the sub-queries to handle this user-query:
+    Find a list of any reactions that have the same EC number as product Histidinol-phosphatase in genome feature fig|83332.12.peg.3503 ?
+Prepare the correct sub-queries (there may just be one) and pass them
+along to the query_executor.  You should only use the SQL query capability
+if the data is obviously in the SQL tables provided.
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mTo answer the user-query, we need to perform two steps:
+
+1. Identify the EC number associated with the product "Histidinol-phosphatase" in the genome feature "fig|83332.12.peg.3503". This information is likely contained within the text files about genomes and features of genomes.
+2. Once we have the EC number, we need to find all reactions that have the same EC number. This information will be in the SQL database, as the EC number is a field in the reactions table.
+
+Given that we need to know the EC number before we can query the SQL database, the sub-query to the text files must be performed first.
+
+Here are the sub-queries in the correct order:
+
+1. Sub-query to the genome text files:
+   - Description: Extract the EC number for the product "Histidinol-phosphatase" associated with the genome feature "fig|83332.12.peg.3503".
+
+2. Sub-query to the SQL database:
+   - Description: Retrieve a list of reactions that have the same EC number as the one obtained from the first sub-query.
+   - SQL Query: `SELECT REACTION_ID FROM reactions WHERE EC = ?;` (The question mark `?` will be replaced with the actual EC number obtained from the first sub-query.)
+
+The first sub-query must be executed before the second one because the result of the first sub-query (the EC number) is required as input for the second sub-query.
+
+```
+Final Answer: The correct order of sub-queries to answer the user-query is as follows:
+
+1. Perform a sub-query to the genome text files to extract the EC number for the product "Histidinol-phosphatase" associated with the genome feature "fig|83332.12.peg.3503".
+2. Use the EC number obtained from the first sub-query to perform a sub-query to the SQL database with the query `SELECT REACTION_ID FROM reactions WHERE EC = ?;` to find a list of reactions with the same EC number.
+```[0m
+
+[1m> Finished chain.[0m
+
+
+[Query Planner] Task output: The correct order of sub-queries to answer the user-query is as follows:
+
+1. Perform a sub-query to the genome text files to extract the EC number for the product "Histidinol-phosphatase" associated with the genome feature "fig|83332.12.peg.3503".
+2. Use the EC number obtained from the first sub-query to perform a sub-query to the SQL database with the query `SELECT REACTION_ID FROM reactions WHERE EC = ?;` to find a list of reactions with the same EC number.
+```
+
+
+Working Agent: Searcher of SQL DBs and Text Files
+Starting Task: 
+You will receive a set of one or two sub-queries from the query_planner.
+Use those tools to perform SQL queries and/or RAG (text) queries as necessary.
+Your final answer MUST be a correct answer to the original user-query:
+    Find a list of any reactions that have the same EC number as product Histidinol-phosphatase in genome feature fig|83332.12.peg.3503 ?
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mThought: Do I need to use a tool? Yes
+Action: Perform an ensemble (vectorDB or BM25) query
+Action Input: Find the EC number for the product "Histidinol-phosphatase" associated with the genome feature "fig|83332.12.peg.3503".[0mDBGRAG1
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain_core/_api/deprecation.py:115: LangChainDeprecationWarning: The function `__call__` was deprecated in LangChain 0.1.0 and will be removed in 0.2.0. Use invoke instead.
+  warn_deprecated(
+DBGRAG2
+[33;1m[1;3mThe EC number for the product "Histidinol-phosphatase" associated with the genome feature "fig|83332.12.peg.3503" is EC 3.1.3.15.[0m[32;1m[1;3mDo I need to use a tool? Yes
+Action: Perform SQL query
+Action Input: SELECT REACTION_ID FROM reactions WHERE EC = 'EC 3.1.3.15';[0mDBGSQL1 SELECT REACTION_ID FROM reactions WHERE EC = 'EC 3.1.3.15';
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain_core/_api/deprecation.py:115: LangChainDeprecationWarning: The function `run` was deprecated in LangChain 0.1.0 and will be removed in 0.2.0. Use invoke instead.
+  warn_deprecated(
+
+
+[1m> Entering new SQLDatabaseChain chain...[0m
+SELECT REACTION_ID FROM reactions WHERE EC = 'EC 3.1.3.15';
+SQLQuery:[32;1m[1;3mSQLQuery: SELECT "REACTION_ID" FROM reactions WHERE "EC" = '3.1.3.15' LIMIT 5;[0m
+SQLResult: [33;1m[1;3m[('rxn34000',), ('rxn02160',)][0m
+Answer:[32;1m[1;3mThe REACTION_IDs with EC number 3.1.3.15 are 'rxn34000' and 'rxn02160'.[0m
+[1m> Finished chain.[0m
+DBGSQL2 The REACTION_IDs with EC number 3.1.3.15 are 'rxn34000' and 'rxn02160'.
+[36;1m[1;3mThe REACTION_IDs with EC number 3.1.3.15 are 'rxn34000' and 'rxn02160'.[0m[32;1m[1;3mDo I need to use a tool? No
+Final Answer: The reactions that have the same EC number as the product Histidinol-phosphatase in genome feature fig|83332.12.peg.3503, which is EC 3.1.3.15, are 'rxn34000' and 'rxn02160'.[0m
+
+[1m> Finished chain.[0m
+
+
+[Searcher of SQL DBs and Text Files] Task output: The reactions that have the same EC number as the product Histidinol-phosphatase in genome feature fig|83332.12.peg.3503, which is EC 3.1.3.15, are 'rxn34000' and 'rxn02160'.
+
+
+######################
+The reactions that have the same EC number as the product Histidinol-phosphatase in genome feature fig|83332.12.peg.3503, which is EC 3.1.3.15, are 'rxn34000' and 'rxn02160'.

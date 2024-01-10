@@ -1,0 +1,64 @@
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain/chat_models/__init__.py:31: LangChainDeprecationWarning: Importing chat models from langchain is deprecated. Importing from langchain will no longer be supported as of langchain==0.2.0. Please import from langchain-community instead:
+
+`from langchain_community.chat_models import ChatOpenAI`.
+
+To install langchain-community run `pip install -U langchain-community`.
+  warnings.warn(
+Working Agent: Query Planner
+Starting Task: 
+If any SQL access is required, you have access to a table that was created
+with this SQL command:
+    ```sql
+        CREATE TABLE IF NOT EXISTS reactions (
+            REACTION_ID TEXT PRIMARY KEY,
+            EC TEXT
+    ```
+Create a description of the sub-queries to handle this user-query:
+    What is the name of the genome with identifier 83332.12 ?
+Prepare the correct sub-queries (there may just be one) and pass them
+along to the query_executor.  You should only use the SQL query capability
+if the data is obviously in the SQL tables provided.
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mThought: Do I need to use a tool? No
+Final Answer: The user-query does not require any SQL sub-query as the information about the genome identifier is not present in the SQL table provided. The SQL table only contains information about reactions and their EC numbers. 
+
+The user-query can be satisfied by a single sub-query to the genome text files. The sub-query would be to search the genome text files for the genome with the identifier 83332.12 and return its name.[0m
+
+[1m> Finished chain.[0m
+
+
+[Query Planner] Task output: The user-query does not require any SQL sub-query as the information about the genome identifier is not present in the SQL table provided. The SQL table only contains information about reactions and their EC numbers. 
+
+The user-query can be satisfied by a single sub-query to the genome text files. The sub-query would be to search the genome text files for the genome with the identifier 83332.12 and return its name.
+
+
+Working Agent: Searcher of SQL DBs and Text Files
+Starting Task: 
+You will receive a set of one or two sub-queries from the query_planner.
+Use those tools to perform SQL queries and/or RAG (text) queries as necessary.
+Your final answer MUST be a correct answer to the original user-query:
+    What is the name of the genome with identifier 83332.12 ?
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mThought: Do I need to use a tool? Yes
+Action: Perform an ensemble (vectorDB or BM25) query
+Action Input: What is the name of the genome with identifier 83332.12?[0mDBGRAG1
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain_core/_api/deprecation.py:115: LangChainDeprecationWarning: The function `__call__` was deprecated in LangChain 0.1.0 and will be removed in 0.2.0. Use invoke instead.
+  warn_deprecated(
+DBGRAG2
+[33;1m[1;3mThe genome with identifier 83332.12 is named Mycobacterium tuberculosis H37Rv.[0m[32;1m[1;3mDo I need to use a tool? No
+Final Answer: The name of the genome with identifier 83332.12 is Mycobacterium tuberculosis H37Rv.[0m
+
+[1m> Finished chain.[0m
+
+
+[Searcher of SQL DBs and Text Files] Task output: The name of the genome with identifier 83332.12 is Mycobacterium tuberculosis H37Rv.
+
+
+######################
+The name of the genome with identifier 83332.12 is Mycobacterium tuberculosis H37Rv.

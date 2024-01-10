@@ -1,0 +1,80 @@
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain/chat_models/__init__.py:31: LangChainDeprecationWarning: Importing chat models from langchain is deprecated. Importing from langchain will no longer be supported as of langchain==0.2.0. Please import from langchain-community instead:
+
+`from langchain_community.chat_models import ChatOpenAI`.
+
+To install langchain-community run `pip install -U langchain-community`.
+  warnings.warn(
+Working Agent: Query Planner
+Starting Task: 
+If any SQL access is required, you have access to a table that was created
+with this SQL command:
+    ```sql
+        CREATE TABLE IF NOT EXISTS reactions (
+            REACTION_ID TEXT PRIMARY KEY,
+            EC TEXT
+    ```
+Create a description of the sub-queries to handle this user-query:
+    Get the EC value for reaction rxn34000.
+Prepare the correct sub-queries (there may just be one) and pass them
+along to the query_executor.  You should only use the SQL query capability
+if the data is obviously in the SQL tables provided.
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mThought: Do I need to use a tool? No
+Final Answer: The user-query can be satisfied by a single sub-query to the SQL DB. The sub-query is as follows:
+
+```sql
+SELECT EC FROM reactions WHERE REACTION_ID = 'rxn34000';
+```
+
+This sub-query will return the EC value for the reaction with the ID 'rxn34000'. There is no need to query the genome text files as the required information is available in the SQL DB.[0m
+
+[1m> Finished chain.[0m
+
+
+[Query Planner] Task output: The user-query can be satisfied by a single sub-query to the SQL DB. The sub-query is as follows:
+
+```sql
+SELECT EC FROM reactions WHERE REACTION_ID = 'rxn34000';
+```
+
+This sub-query will return the EC value for the reaction with the ID 'rxn34000'. There is no need to query the genome text files as the required information is available in the SQL DB.
+
+
+Working Agent: Searcher of SQL DBs and Text Files
+Starting Task: 
+You will receive a set of one or two sub-queries from the query_planner.
+Use those tools to perform SQL queries and/or RAG (text) queries as necessary.
+Your final answer MUST be a correct answer to the original user-query:
+    Get the EC value for reaction rxn34000.
+
+
+
+[1m> Entering new CrewAgentExecutor chain...[0m
+[32;1m[1;3mThought: Do I need to use a tool? Yes
+Action: Perform SQL query
+Action Input: SELECT EC FROM reactions WHERE REACTION_ID = 'rxn34000';[0mDBGSQL1 SELECT EC FROM reactions WHERE REACTION_ID = 'rxn34000';
+/Users/rbutler/VENVS/TESTS/lib/python3.11/site-packages/langchain_core/_api/deprecation.py:115: LangChainDeprecationWarning: The function `run` was deprecated in LangChain 0.1.0 and will be removed in 0.2.0. Use invoke instead.
+  warn_deprecated(
+
+
+[1m> Entering new SQLDatabaseChain chain...[0m
+SELECT EC FROM reactions WHERE REACTION_ID = 'rxn34000';
+SQLQuery:[32;1m[1;3mSELECT "EC" FROM reactions WHERE "REACTION_ID" = 'rxn34000';[0m
+SQLResult: [33;1m[1;3m[('3.1.3.15',)][0m
+Answer:[32;1m[1;3mThe EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.[0m
+[1m> Finished chain.[0m
+DBGSQL2 The EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.
+[36;1m[1;3mThe EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.[0m[32;1m[1;3mDo I need to use a tool? No
+Final Answer: The EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.[0m
+
+[1m> Finished chain.[0m
+
+
+[Searcher of SQL DBs and Text Files] Task output: The EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.
+
+
+######################
+The EC number for the reaction with the ID 'rxn34000' is 3.1.3.15.
