@@ -1,0 +1,24 @@
+
+# 2024-04-04 14:26:17.659822
++/add template.py
+
+# 2024-04-04 14:27:56.424492
++use template.py as an example of how I build langchain agents.  use it to build a new program that runs two agents, each of which makes a move in a game on each iteration of the main program.
+
+# 2024-04-04 15:08:43.474102
++/add 02_agent.py
+
+# 2024-04-04 15:09:05.745618
++/add 02_game.py
+
+# 2024-04-04 15:10:03.810754
++the function create_game_agent does not use the agent_name anywhere.  Is there a place we can put it so the user can refer to the agent by naem?
+
+# 2024-04-04 15:11:33.699990
++When I try to run like that, it tells me that AgentExecutor does not have an atribute by that name.  
+
+# 2024-04-04 15:12:34.477680
++/save
+
+# 2024-04-04 15:12:38.047190
++/exit
